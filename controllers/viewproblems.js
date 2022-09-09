@@ -15,6 +15,7 @@ async function viewproblems(req, res) {
           res.render("viewproblems", { docs });
         });
       } else {
+        res.redirect('/login');
       }
     })
     .catch((Err) => {
