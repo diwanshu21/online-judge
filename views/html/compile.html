@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+    <style>
+      
+#ide {
+  margin: 20px;
+  padding: 20px;
+}
+
+#ide .container {
+  display: flex;
+  flex-direction: column;
+}
+#ide .container > * {
+  margin: 10px 0;
+  padding: 10px 0;
+}
+
+#ide .content {
+  font-size: 30px;
+}
+
+#ide .lang #lang {
+  font-size: 20px;
+  padding: 5px;
+}
+
+#ide #editor {
+  width: 800px;
+  max-width: 100%;
+  height: 400px;
+}
+.btn-group .btn {
+  display: inline-block;
+  padding: 10px 30px;
+  margin-right: 60px;
+  font-size: 20px;
+  background-color: blue;
+}
+
+.input ,.output{
+    display: flex;
+    flex-direction:column;
+    
+}
+.input>*,.output>*{
+    margin: 10px 0;
+    padding: 5px;
+}
+
+.input textarea,.output textarea{
+    width: 800px;
+    max-width: 100%;
+    height: 200px;
+    overflow: auto;
+    background-color: rgb(232, 232, 232);
+    font-size: 20px;
+}
+.input label,.output label{
+    font-weight: bold;
+    font-size: 25px;
+}
+
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <i class="fa-solid fa-code"></i>
+          <div class="brand">CodeWit</div>
+        </div>
+      </div>
+    </header>
+    <section id="ide">
+      <div class="container">
+        <div class="content">Code, Compile & Run</div>
+        <div class="lang">
+          <select name="lang" id="lang">
+            <option value="C++">C++</option>
+            <option value="PYTH3">PYTH3</option>
+          </select>
+        </div>
+        <div id="editor">
+            hellow world
+        </div>
+        <div class="btn-group">
+          <a class="btn run">Run</a>
+          <a class="btn submit">Submit</a>
+        </div>
+        <div class="input">
+            <label for="">Custom Input</label>
+          <textarea name="" id=""></textarea>
+        </div>
+        <div class="output">
+            <label for="">Output</label>
+            <textarea name="" id="" ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/ace.js"
+      integrity="sha512-U/FB3cdRpCPIpdDLjvLQoqCiupCM95qGrIMZqb99+84XrRQp4EppJ0gfVZAL5kcI9owxxKxrMrrFDJP1RfKAXQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script>
+      var editor = ace.edit("editor");
+      editor.setTheme("ace/theme/monokai");
+      editor.session.setMode("ace/mode/javascript");
+      document.getElementById("editor").style.fontSize = "16px";
+    </script>
+    <script>
+        let code = document.querySelector("#code");
+      let input = document.querySelector("#input");
+      let form = document.querySelector("form");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          let pkg = { code: form["code"].value, input: form["input"].value };
+
+          (() => {
+            let start = Date.now();
+            fetch("/compile", {
+              method: "POST",
+              body: JSON.stringify(pkg),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                form["output"].value = data;
+                console.log(data,start);
+              });
+          })();
+        } catch (error) {
+          console.log("Frontend error");
+          console.log(error);
+        }
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+      integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <style>
+      #problem {
+        border: 1px solid black;
+      }
+
+      .btn {
+        width: fit-content;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 20px;
+      }
+    </style>
+    <title>Document</title>
+  </head>
+  <body>
+    <%- include('include/header.ejs') %> <%- include('include/navbar.ejs') %>
+
+    <div class="container">
+      <div id="problem"></div>
+      <div class="btn-group">
+        <button class="btn submit">Submit</button>
+        <button class="btn update">Update</button>
+      </div>
+    </div>
+  </body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <script>
+    // var quill = new Quill("#problem", {
+    //   theme: "snow",
+    // });
+    let data = "<%-problem.statement%>";
+
+    // let obj=JSON.parse(data);
+    // console.log(obj)
+    document.getElementById("problem").innerHTML = data;
+    let btnsubmit = document.querySelector(".btn.submit");
+    let btnupdate = document.querySelector(".btn.update");
+
+    btnsubmit.addEventListener("click", (e) => {
+      var pathArray = window.location.pathname.split("/");
+      var newURL =
+        window.location.protocol +
+        "//" +
+        window.location.host +
+        "/" +
+        "submitcode/" +
+        pathArray[2];
+      window.location.href = newURL;
+    });
+
+    btnupdate.addEventListener("click", (e) => {
+      var pathArray = window.location.pathname.split("/");
+      var newURL =
+        window.location.protocol +
+        "//" +
+        window.location.host +
+        "/" +
+        "updateproblem/" +
+        pathArray[2];
+      window.location.href = newURL;
+    });
+  </script>
+</html>

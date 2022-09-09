@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Online Judge</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+      integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <style>
+      table {
+        width: 80%;
+        overflow-x: auto;
+        border: 2px solid blue;
+        padding: 0;
+        border-collapse: collapse;
+        margin: 30px;
+      }
+      tr {
+        border: 1px solid blue;
+        text-align: center;
+      }
+      td,
+      th {
+        border: 1px solid blue;
+        padding: 5px;
+        margin: 0;
+      }
+      td {
+        font-size: 18px;
+        overflow: auto;
+        padding: 10px 30px;
+      }
+
+      th {
+        font-size: 25px;
+        padding: 10px 20px;
+        background-color: blue;
+        color: white;
+      }
+
+      td a{
+        display: inline-block;
+        border: 1px solid blue;
+        padding: 5px;
+        margin: 5px;
+        transition: all .3s;
+      }
+      td a:hover{
+        background-color: blue;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('include/header.ejs') %> <%- include('include/navbar.ejs') %>
+    <div class="container">
+      <table>
+        <tr>
+          <th>Sno.</th>
+          <th>Title</th>
+          <th>Memory Limit</th>
+          <th>Time Limit</th>
+          <th></th>
+        </tr>
+        <% for(let i=0 ;i < docs.length ;i++) { %>
+        <tr>
+          <td><%= i+1 %></td>
+          <td><%= docs[i].title %></td>
+          <td><%= docs[i].memorylimit %></td>
+          <td><%= docs[i].timelimit %></td>
+          <td>
+            <a href="http://localhost:3000/problem/<%= docs[i]._id %>" target="_blank"><i class="fa fa-eye"></i></a>
+            <a href="http://localhost:3000/updateproblem/<%= docs[i]._id %>" target="_blank"><i class="fa fa-edit"></i>	</a>
+          </td>
+        </tr>
+        <% } %>
+      </table>
+    </div>
+  </body>
+</html>

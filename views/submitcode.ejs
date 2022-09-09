@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+    integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <title>Code,Compile, Run</title>
+    <style>
+      
+#ide {
+  margin: 20px;
+  padding: 20px;
+}
+
+#ide .container {
+  display: flex;
+  flex-direction: column;
+}
+#ide .container > * {
+  margin: 10px 0;
+  padding: 10px 0;
+}
+
+#ide .content {
+  font-size: 30px;
+}
+
+#ide .lang #lang {
+  font-size: 20px;
+  padding: 5px;
+}
+
+#ide #editor {
+  width: 800px;
+  max-width: 100%;
+  height: 400px;
+}
+.btn-group{
+  display:flex;
+}
+.btn-group .btn {
+  width: fit-content;
+  display: inline-block;
+  padding: 10px 30px;
+  margin-right: 60px;
+  font-size: 20px;
+}
+
+.input ,.output{
+    display: flex;
+    flex-direction:column;
+    
+}
+.input>*,.output>*{
+    margin: 10px 0;
+    padding: 5px;
+}
+
+.input textarea,.output textarea{
+    width: 800px;
+    max-width: 100%;
+    height: 200px;
+    overflow: auto;
+    background-color: rgb(232, 232, 232);
+    font-size: 20px;
+}
+.input label,.output label{
+    font-weight: bold;
+    font-size: 25px;
+}
+
+    </style>
+  </head>
+  <body>
+    <%- include('include/header.ejs') %> 
+    <%- include('include/navbar.ejs') %>
+
+    <section id="ide">
+      <div class="container">
+        <div class="content">Code, Compile & Run</div>
+        <div class="lang">
+          <select name="lang" id="lang" onchange="langchange()">
+            <option value="C++">C++</option>
+            <option value="PYTH3">PYTH3</option>
+          </select>
+        </div>
+        <div id="editor"></div>
+        <div class="btn-group">
+          <a class="btn run">Run</a>
+          <a class="btn submit">Submit</a>
+        </div>
+        <div class="input">
+            <label for="">Custom Input</label>
+          <textarea name="input" id="input"></textarea>
+        </div>
+        <div class="output">
+            <label for="">Output</label>
+            <textarea name="output" id="output" readonly ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.1/ace.js"
+      integrity="sha512-U/FB3cdRpCPIpdDLjvLQoqCiupCM95qGrIMZqb99+84XrRQp4EppJ0gfVZAL5kcI9owxxKxrMrrFDJP1RfKAXQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script>
+      var editor = ace.edit("editor");
+      editor.setTheme("ace/theme/monokai");
+      editor.session.setMode("ace/mode/c_cpp");
+      document.getElementById("editor").style.fontSize = "16px";
+    </script>
+    <script>
+      let code = document.querySelector("#editor");
+      let input = document.querySelector("#input");
+      let run=document.querySelector(".run");
+      let submit=document.querySelector(".submit");
+
+      run.addEventListener('click',async(e)=>{
+        e.preventDefault();
+        try {
+          var mode = editor.session.$modeId;
+
+// modeid returns the full string (ace/mode/html), cut to the mode name only
+mode = mode.substr(mode.lastIndexOf('/') + 1);
+          let pkg = { code: editor.getValue(), input: input.textContent,lang:mode
+ };
+console.log(pkg)
+            fetch("/compile", {
+              method: "POST",
+              body: JSON.stringify(pkg),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                output.textContent = data;
+                console.log(data);
+              });
+        } catch (error) {
+          console.log("Frontend error");
+          console.log(error);
+        }
+      })
+
+      submit.addEventListener('click',async(e)=>{
+          e.preventDefault();
+          try {
+          var mode = editor.session.$modeId;
+
+// modeid returns the full string (ace/mode/html), cut to the mode name only
+mode = mode.substr(mode.lastIndexOf('/') + 1);
+          let pkg = { code: editor.getValue(), input: input.textContent,lang:mode
+ };
+console.log(pkg)
+            fetch("/compile", {
+              method: "POST",
+              body: JSON.stringify(pkg),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+              .then((res) => res.json())
+              .then((output) => {
+                pkg.output = output;
+              pkg.problemid = window.location.pathname.split("/")[2];
+
+              fetch(window.location, {
+                method: "POST",
+                body: JSON.stringify(pkg),
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  console.log({ data });
+                  console.log("Code has been submitted");
+                })
+                .catch((err) => {
+                  console.error(err);
+                  console.error("Error in code submission");
+                });
+              });
+        } catch (error) {
+          console.log("Frontend error");
+          console.log(error);
+        }
+      })
+     
+      function langchange()
+      {
+        let select=document.querySelector('#lang').value;
+        let mode="c_cpp";
+        console.log({select})
+        if(select=="C++")
+        {
+          mode="c_cpp";
+        }
+        else if(select=="PYTH3")
+        {
+          mode="python";
+        }
+
+        editor.session.setMode(`ace/mode/${mode}`);
+
+      }
+    </script>
+  </body>
+</html>

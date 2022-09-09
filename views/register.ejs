@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+      integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <title>Document</title>
+    <style>
+      .card {
+        width: fit-content;
+        /* border: 1px solid red; */
+        margin: 40px auto;
+        background-color: white;
+        border-radius: 20px;
+        border: 2px solid blue;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+          rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        margin: 5px;
+        padding: 10px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        /* border: 1px solid red; */
+        margin: 10px;
+        /* padding: 10px ; */
+      }
+      .form-group > * {
+        display: flex;
+        flex-direction: column;
+        font-size: 20px;
+      }
+
+      input {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: "Ubuntu";
+      }
+
+      label {
+        color: rgb(77, 76, 76);
+      }
+
+      .btn {
+        display: inline-block;
+        margin: 5px auto;
+        padding: 10px auto;
+        text-align: center;
+      }
+      .message {
+        color: red !important;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('include/header.ejs') %> <%- include('include/navbar.ejs') %>
+
+    <div class="card">
+      <form>
+        <h2>Register</h2>
+        <div class="form-group">
+          <label for="">Username</label>
+          <input type="text" name="username" id="username" />
+        </div>
+        <div class="form-group">
+          <label for="">Password</label>
+          <input type="password" name="password" id="password" />
+        </div>
+        <p class="message"></p>
+        <div class="form-group">
+          <a class="btn register">Register</a>
+        </div>
+        <p>Existing User ? <a href="/login" class="btn">Login</a></p>
+      </form>
+    </div>
+  </body>
+  <script>
+    let registerbtn = document.querySelector(".register");
+    let msg = document.querySelector(".message");
+    msg.style.display = "none";
+
+    registerbtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      console.log("click");
+      try {
+        let username = document.querySelector("#username").value;
+        let password = document.querySelector("#password").value;
+
+        let pkg = {
+          username,
+          password,
+        };
+        console.log(pkg);
+        fetch("/register", {
+          method: "POST",
+          body: JSON.stringify(pkg),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((result) => result.json())
+          .then((result) => {
+            console.log(result);
+            console.log(msg);
+            msg.style.display = "block";
+            msg.textContent = result.message;
+            console.log(msg);
+            setTimeout(() => {
+              msg.textContent = "";
+              msg.style.display = "none";
+            }, 2000);
+
+            if (result.success) {
+              location.href = "/";
+            }
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  </script>
+</html>

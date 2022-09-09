@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+
+    <form>
+      <div class="form-group">
+        <label for="code">Code</label>
+        <textarea name="code" id="code" cols="30" rows="10"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="input">Input</label>
+        <textarea name="input" id="input" cols="30" rows="10"></textarea>
+      </div>
+      <button type="submit" id="submit">Submit</button>
+      <div class="form-group">
+        <label for="output">Output</label>
+        <textarea name="output" id="output" cols="30" rows="10"></textarea>
+      </div>
+    </form>
+
+    <script>
+      let code = document.querySelector("#code");
+      let input = document.querySelector("#input");
+      let form = document.querySelector("form");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          let pkg = { code: form["code"].value, input: form["input"].value };
+
+          fetch("/compile", {
+            method: "POST",
+            body: JSON.stringify(pkg),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              form["output"].value=data;
+            });
+        } catch (error) {
+          console.log("Frontend error");
+          console.log(error);
+        }
+      });
+    </script>
+  </body>
+</html>
