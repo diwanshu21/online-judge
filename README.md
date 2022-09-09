@@ -17,6 +17,6 @@
 ![alt text](https://github.com/diwanshu21/online-judge/blob/master/public/images/img6.png?raw=true)
 
 # online-judge
-Online judge for compiling code, addding problems.
+Online judge for compiling code, adding problems.
 
 
