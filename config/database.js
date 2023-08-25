@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
-
+var dotenv =require("dotenv"); // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config();
+ 
 mongoose
   .connect(
-    "mongodb+srv://admin:admin123@cluster0.rlfjf.mongodb.net/online_judge"
+    process.env.MONGO_URL
   )
   .catch((err) => {
     console.log("Connection failed");
@@ -12,7 +14,7 @@ mongoose
 const userSchema = mongoose.Schema({
   username: String,
   password: String,
-  problems: [String],
+  problems: [String], 
 });
 
 const codesubmission = mongoose.Schema({

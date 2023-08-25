@@ -133,7 +133,7 @@
 
 // modeid returns the full string (ace/mode/html), cut to the mode name only
 mode = mode.substr(mode.lastIndexOf('/') + 1);
-          let pkg = { code: editor.getValue(), input: input.textContent,lang:mode
+          let pkg = { code: editor.getValue(), input: input.value,lang:mode
  };
 console.log(pkg)
             fetch("/compile", {

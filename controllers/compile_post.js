@@ -47,8 +47,37 @@ async function compile_post(req, res) {
     );
     console.log("started compiling");
     let start = Date.now();
-    cp.exec(cmd, { shell: true, timeout: 10000 }, (error, stdout, stderr) => {
+
+
+    const command = cmd; // Replace with the actual script/command you want to run
+const timeout = 5000; // Timeout in milliseconds (5 seconds)
+const memoryLimit = 512 * 1024 * 1024; // Memory limit in bytes (e.g., 512MB)
+
+const options = {
+    env: {
+        ...process.env,
+        NODE_OPTIONS: `--max-old-space-size=${memoryLimit}`
+    },
+    timeout: timeout
+};
+
+
+
+    cp.exec(cmd, options, (error, stdout, stderr) => {
       console.log((Date.now() - start) / 1000);
+
+      if (error) {
+        if (error.killed) {
+            console.error(`Child process terminated due to timeout`);
+        } else {
+            console.error(`Error occurred: ${error.message}`);
+        }
+    } else {
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+    }
+
+
       let result;
 
       {
@@ -69,13 +98,47 @@ async function compile_post(req, res) {
       if (!error) {
         result = output;
       } else {
-        result = error.signal;
+        result = stderr;
+        console.log(stderr)
       }
       res.json(result);
 
       console.log("compiling finished");
       fs.rm(dir, { recursive: true, force: true }, (err) => {});
     });
+    // cp.exec(cmd, { shell: true, timeout: 10000 }, (error, stdout, stderr) => {
+    //   console.log((Date.now() - start) / 1000);
+    //   let result;
+
+    //   {
+    //     if (stderr) {
+    //       result = stderr;
+    //     } else {
+    //       result = stdout;
+    //     }
+    //   }
+    //   let output = fs.readFileSync(path.join(dir, "/output.txt"), {
+    //     encoding: "utf-8",
+    //   });
+    //   // let timedata = fs.readFileSync(path.join(dir, "/time.txt"), {
+    //   //   encoding: "utf-8",
+    //   // });
+    //   // console.log({ output }, { timedata });
+    //   console.log({ error }, { stderr }, { stdout });
+    //   if (!error) {
+    //     result = output;
+    //   } else {
+    //     result = stderr;
+    //     console.log(stderr)
+    //   }
+    //   res.json(result);
+
+    //   console.log("compiling finished");
+    //   fs.rm(dir, { recursive: true, force: true }, (err) => {});
+    // });
+
+
+    
   } catch (error) {
     console.log("error in compiling");
     console.log(error);

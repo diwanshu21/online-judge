@@ -1,12 +1,13 @@
 var passport = require("passport");
 const {UserModel} = require("./database");
-
+var dotenv =require("dotenv"); // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config();
 var JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
 
 var opts = {};
 opts.jwtFromRequest = cookieExtractor;
-opts.secretOrKey = "Random string";
+opts.secretOrKey = process.env.SECRET_KEY;
 
 function cookieExtractor(req) {
   var token = null;

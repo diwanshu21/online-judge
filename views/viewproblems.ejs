@@ -73,8 +73,8 @@
           <td><%= docs[i].memorylimit %></td>
           <td><%= docs[i].timelimit %></td>
           <td>
-            <a href="http://localhost:3000/problem/<%= docs[i]._id %>" target="_blank"><i class="fa fa-eye"></i></a>
-            <a href="http://localhost:3000/updateproblem/<%= docs[i]._id %>" target="_blank"><i class="fa fa-edit"></i>	</a>
+            <a href="/problem/<%= docs[i]._id %>" target="_blank"><i class="fa fa-eye"></i></a>
+            <a href="/updateproblem/<%= docs[i]._id %>" target="_blank"><i class="fa fa-edit"></i>	</a>
           </td>
         </tr>
         <% } %>
