@@ -23,6 +23,7 @@ function homeRoute(req, res) {
       } else {
         res.status(200).render("home.ejs", { username: null });
       }
+      console.log("TOKEN:",req.cookies["jwt"])
       console.log("data found");
     }).catch((err) => {
       console.log(err);
