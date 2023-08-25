@@ -75,9 +75,13 @@ async function compile_post(req, res) {
       console.log({ error }, { stderr }, { stdout });
       if (!error) {
         result = output;
-      } else {
+      } else if(stderr) {
         result = stderr;
         console.log(stderr)
+      }
+      else {
+        result="Timeout";
+        console.log()
       }
       res.json(result);
 
