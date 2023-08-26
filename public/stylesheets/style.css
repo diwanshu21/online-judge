@@ -126,7 +126,7 @@ header {
 .card a,
 .btn {
   display: block;
-  font-size: 25px;
+  font-size: 20px;
   margin: 20px 0;
   padding: 10px 30px;
   width: 100%;
@@ -137,6 +137,7 @@ header {
   border: 2px solid blue;
   transition: all 0.15s;
 }
+
 .card a:hover,
 .btn:hover {
   background-color: white;

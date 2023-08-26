@@ -3,6 +3,7 @@ const { UserModel } = require("../config/database");
 var jwt = require("jsonwebtoken");
 
 function login_post(req, res, next) {
+
   UserModel.findOne({ username: req.body.username })
     .then((user) => {
       // No user

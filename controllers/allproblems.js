@@ -11,7 +11,7 @@ function allproblems(req, res) {
           let data = result.user.problems;
           let obj = Object.assign({}, data);
           // obj = JSON.parse(obj);
-          console.log(obj);
+          // console.log(obj);
           res.status(200).send(obj);
         }
       } else {

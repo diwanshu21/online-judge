@@ -76,7 +76,10 @@
     font-weight: bold;
     font-size: 25px;
 }
-
+i.fa{
+       margin-right: 5px; 
+       display: none;
+      }
     </style>
   </head>
   <body>
@@ -94,8 +97,8 @@
         </div>
         <div id="editor"></div>
         <div class="btn-group">
-          <a class="btn run">Run</a>
-          <a class="btn submit">Submit</a>
+          <a class="btn run"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i> Run</a>
+          <a class="btn submit"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i> Submit</a>
         </div>
         <div class="input">
             <label for="">Custom Input</label>
@@ -125,6 +128,8 @@
       let input = document.querySelector("#input");
       let run=document.querySelector(".run");
       let submit=document.querySelector(".submit");
+      let loader=document.querySelectorAll('i.fa');
+
 
       run.addEventListener('click',async(e)=>{
         e.preventDefault();
@@ -136,6 +141,9 @@ mode = mode.substr(mode.lastIndexOf('/') + 1);
           let pkg = { code: editor.getValue(), input: input.value,lang:mode
  };
 console.log(pkg)
+
+loader[0].style.display="inline-block";
+
             fetch("/compile", {
               method: "POST",
               body: JSON.stringify(pkg),
@@ -147,10 +155,14 @@ console.log(pkg)
               .then((data) => {
                 output.textContent = data;
                 console.log(data);
+                loader[0].style.display="none";
+
               });
         } catch (error) {
           console.log("Frontend error");
           console.log(error);
+          loader[0].style.display="none";
+
         }
       })
 
@@ -159,11 +171,14 @@ console.log(pkg)
           try {
           var mode = editor.session.$modeId;
 
-// modeid returns the full string (ace/mode/html), cut to the mode name only
-mode = mode.substr(mode.lastIndexOf('/') + 1);
-          let pkg = { code: editor.getValue(), input: input.textContent,lang:mode
- };
-console.log(pkg)
+                // modeid returns the full string (ace/mode/html), cut to the mode name only
+          mode = mode.substr(mode.lastIndexOf('/') + 1);
+                let pkg = { code: editor.getValue(), input: input.textContent,lang:mode
+      };
+      console.log(pkg)
+
+      loader[1].style.display="inline-block";
+
             fetch("/compile", {
               method: "POST",
               body: JSON.stringify(pkg),
@@ -187,18 +202,24 @@ console.log(pkg)
                 .then((data) => {
                   console.log({ data });
                   console.log("Code has been submitted");
+                  loader[1].style.display="none";
+                  
                 })
                 .catch((err) => {
                   console.error(err);
                   console.error("Error in code submission");
-                });
+                loader[1].style.display="none";
               });
-        } catch (error) {
-          console.log("Frontend error");
-          console.log(error);
+            });
+          } catch (error) {
+            console.log("Frontend error");
+            console.log(error);
+            loader[1].style.display="none";
         }
       })
      
+
+
       function langchange()
       {
         let select=document.querySelector('#lang').value;

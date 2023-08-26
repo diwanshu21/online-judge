@@ -3,13 +3,14 @@ const jwt = require("jsonwebtoken");
 const { UserModel } = require("../config/database");
 
 function register_post(req, res) {
+  console.log(req.body.username,req.body.password)
   const user = new UserModel({
     username: req.body.username,
-    password: hashSync(req.body.password, 10),
+    password: req.body.password,
   });
-
+ 
   user
-    .save()
+    .save() 
     .then((user) => {
       const payload = {
         username: user.username,
@@ -20,17 +21,23 @@ function register_post(req, res) {
       res.cookie("jwt", token, {
         expires: new Date(Date.now() + 900000),
         httpOnly: true,
-      });
+      });  
 
-      res.status(200).send({success:true,message:"Successfully registered"});
+      res.status(200).json({success:true,message:"Successfully registered"});
     })
     .catch((err) => {
-      res.status(500).render({
+      let msg="";
+      msg+=err.errors?.username?.message+"--";
+      msg+=err.errors?.password?.message;
+
+      res.status(500).json({
         success: false,
-        message: "Something went wrong",
+        message: msg,
         error: err,
       });
-      console.error(err);
+      // console.error(err.errors.username);
+      console.error(Object.keys(err));
+      console.log(err)
     });
 }
 

@@ -3,13 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-      integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <%- include('include/top.ejs') %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>Document</title>
@@ -59,9 +53,16 @@
         margin: 5px auto;
         padding: 10px auto;
         text-align: center;
+        align-items: center;
+        font-size: 20px;
       }
       .message {
         color: red !important;
+      }
+
+      i.fa{
+       margin-right: 5px; 
+       display: none;
       }
     </style>
   </head>
@@ -73,63 +74,87 @@
         <h2>Register</h2>
         <div class="form-group">
           <label for="">Username</label>
-          <input type="text" name="username" id="username" />
+          <input type="text" name="username" id="username" required/>
         </div>
         <div class="form-group">
           <label for="">Password</label>
-          <input type="password" name="password" id="password" />
+          <input type="password" name="password" id="password" required />
         </div>
         <p class="message"></p>
         <div class="form-group">
-          <a class="btn register">Register</a>
+          <button type="submit" class="btn register"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+            Register</button>
         </div>
         <p>Existing User ? <a href="/login" class="btn">Login</a></p>
       </form>
     </div>
   </body>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
+    integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
   <script>
+    let form = document.querySelector("form");
+    let loader=document.querySelector('i.fa');
+    console.log(loader)
     let registerbtn = document.querySelector(".register");
     let msg = document.querySelector(".message");
     msg.style.display = "none";
 
-    registerbtn.addEventListener("click", async (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       console.log("click");
       try {
         let username = document.querySelector("#username").value;
         let password = document.querySelector("#password").value;
+        const formData = new FormData(e.target);
+        const formProps = Object.fromEntries(formData);
+        console.log(formProps);
 
-        let pkg = {
-          username,
-          password,
-        };
-        console.log(pkg);
-        fetch("/register", {
-          method: "POST",
-          body: JSON.stringify(pkg),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-          .then((result) => result.json())
-          .then((result) => {
+        loader.style.display="inline-block";
+        axios
+          .post("/register", formProps, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response )=> {
+            let result=response.data;
             console.log(result);
-            console.log(msg);
             msg.style.display = "block";
             msg.textContent = result.message;
             console.log(msg);
             setTimeout(() => {
               msg.textContent = "";
               msg.style.display = "none";
+
             }, 2000);
 
             if (result.success) {
               location.href = "/";
             }
+            loader.style.display="none";
+            
+          })
+          .catch((err) => {
+            // console.log(result);
+            // console.log(msg);
+            msg.style.display = "block";
+            msg.textContent = "User registration failed";
+            console.log(err);
+            setTimeout(() => {
+              msg.textContent = "";
+              msg.style.display = "none";
+            }, 2000);
+            loader.style.display="none";
           });
+
       } catch (error) {
         console.log(error);
-      }
+      } 
+     
     });
   </script>
 </html>
