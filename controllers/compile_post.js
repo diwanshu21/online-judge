@@ -20,7 +20,7 @@ async function compile_post(req, res) {
   let dir =`../codesubmit/${folder}`;
   let cmd2 = `cd ${dir} && rsync -a /bin ./`;
   let limit = `cd ${dir} `;
-  let cmd = ` cd ${dir} &&  g++ ./program.cpp -o program  && ./program < './input.txt' > './output.txt'`;
+  let cmd = ` cd ${dir} &&  g++ ./program.cpp -o program  && time ./program < './input.txt' > './output.txt'`;
 
   try {
     let { code, input } = req.body;
@@ -73,8 +73,23 @@ async function compile_post(req, res) {
       // });
       // console.log({ output }, { timedata });
       console.log({ error }, { stderr }, { stdout });
+      let tm;
       if (!error) {
         result = output;
+        const elapsedTimeRegex = /(\d+:\d+\.\d+)elapsed/;
+const match = stderr.match(elapsedTimeRegex);
+
+if (match) {
+  const elapsedTime = match[1];
+  const [minutes, secondsAndHundredths] = elapsedTime.split(":");
+  const [seconds, hundredths] = secondsAndHundredths.split(".");
+  const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds) + parseFloat(`0.${hundredths}`);
+  
+  tm=totalSeconds;
+  console.log(`Elapsed Time: ${elapsedTime}`);
+} else {
+  console.log("Elapsed time not found in the output.");
+}
       } else if(stderr) {
         result = stderr;
         console.log(stderr)
@@ -83,7 +98,7 @@ async function compile_post(req, res) {
         result="Timeout";
         console.log()
       }
-      res.json(result);
+      res.json({output:result,time:tm});
 
       console.log("compiling finished");
       fs.rm(dir, { recursive: true, force: true }, (err) => {});

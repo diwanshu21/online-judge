@@ -16,8 +16,8 @@
     <style>
       
 #ide {
-  margin: 20px;
-  padding: 20px;
+  margin: 10px;
+  padding: 10px;
 }
 
 #ide .container {
@@ -71,6 +71,7 @@
     overflow: auto;
     background-color: rgb(232, 232, 232);
     font-size: 20px;
+    margin-top: 0;
 }
 .input label,.output label{
     font-weight: bold;
@@ -80,6 +81,17 @@
 i.fa{
        margin-right: 5px; 
        display: none;
+      }
+
+      .output,.timeinfo{
+        display: none;
+      }
+
+      .timeinfo{
+        border: 2px solid black;
+        margin-bottom: 0;
+        margin-top: 10px;
+        padding: 10px;
       }
 
     </style>
@@ -108,8 +120,12 @@ i.fa{
         </div>
         <div class="output">
             <label for="">Output</label>
+            <div class="timeinfo"></div>
             <textarea name="output" id="output" readonly ></textarea>
-        </div>
+       <!-- <div class="timeinfo"> -->
+        <!-- </div>  -->
+      </div>
+        
       </div>
     </div>
 
@@ -131,6 +147,9 @@ i.fa{
       let run=document.querySelector(".run");
       let submit=document.querySelector(".submit");
       let loader=document.querySelectorAll('i.fa');
+      let time=document.querySelector('.timeinfo');
+      let output=document.querySelector('.output');
+      let textarea=document.querySelector('#output');
 
       run.addEventListener('click',async(e)=>{
         e.preventDefault();
@@ -147,6 +166,9 @@ console.log(pkg)
 
 loader[0].style.display="inline-block";
 
+time.style.display="none";
+output.style.display="none";
+
             fetch("/compile", {
               method: "POST",
               body: JSON.stringify(pkg),
@@ -156,7 +178,18 @@ loader[0].style.display="inline-block";
             })
               .then((res) => res.json())
               .then((data) => {
-                output.textContent = data;
+             
+                time.style.display="block";
+                output.style.display="block";
+
+                textarea.textContent = data.output;
+                time.textContent='Time Used: '+(data.time+'s' || '0s');
+                if(!data.time)
+                {
+                  time.textContent='Time Used: '+'0s';
+                  
+                }
+                console.log(data.time);
                 console.log(data);
                 loader[0].style.display="none";
               });
@@ -164,6 +197,9 @@ loader[0].style.display="inline-block";
           console.log("Frontend error");
           console.log(error);
           loader[0].style.display="none";
+
+          time.style.display="block";
+output.style.display="block";
         }
       })
 
