@@ -18,7 +18,8 @@ async function compile_post(req, res) {
   // let codeSubmit=path.join(parentPath,'codesubmit');
   // let dir =path.join(codeSubmit,folder);
   let dir =`../codesubmit/${folder}`;
-  let cmd2 = `cd ${dir} && rsync -a /bin ./`;
+  let cmd2 = `cd ${dir} && rsync -a /bin ./ && sudo apt-get install time -y
+  `;
   let limit = `cd ${dir} `;
   let cmd = ` cd ${dir} &&  g++ ./program.cpp -o program  && /usr/bin/time ./program < './input.txt' > './output.txt'`;
 
