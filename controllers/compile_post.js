@@ -19,8 +19,8 @@ async function compile_post(req, res) {
   // let dir =path.join(codeSubmit,folder);
   let dir =`../codesubmit/${folder}`;
   let cmd2 = `cd ${dir} && rsync -a /bin ./`;
-  let limit = `cd ${dir} `;
-  let cmd = `cd ${dir} &&  g++ ./program.cpp -o program  && ./program < './input.txt' > ./output.txt`;
+  let limit = `cd ${dir} &&  g++ ./program.cpp -o program`;
+  let cmd = `cd ${dir}  && ./program < './input.txt' > ./output.txt`;
   try {
     let { code, input } = req.body;
     // console.log(code, input);
