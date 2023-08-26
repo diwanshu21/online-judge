@@ -13,14 +13,14 @@ let lang = {
 async function compile_post(req, res) {
   let folder = uuidv4();
 
-  let currentDirectory=__dirname;
-  let parentPath=path.dirname(currentDirectory);
-  let codeSubmit=path.join(parentPath,'codesubmit');
-  let dir =path.join(codeSubmit,folder);
-  // let dir =`../codesubmit/${folder}`;
+  // let currentDirectory=__dirname;
+  // let parentPath=path.dirname(currentDirectory);
+  // let codeSubmit=path.join(parentPath,'codesubmit');
+  // let dir =path.join(codeSubmit,folder);
+  let dir =`../codesubmit/${folder}`;
   let cmd2 = `cd ${dir} && rsync -a /bin ./`;
-  let limit = `g++ ${dir}/program.cpp -o  ${dir}/program`;
-  let cmd = `${dir}/program < '${dir}/input.txt' > ${dir}/output.txt`;
+  let limit = `cd ${dir} &&  g++ ./program.cpp -o program`;
+  let cmd = `cd ${dir}  && ./program < './input.txt' > ./output.txt`;
   try {
     let { code, input } = req.body;
     // console.log(code, input);
@@ -28,7 +28,7 @@ async function compile_post(req, res) {
     if (!fs.existsSync(dir)) {
       console.log(dir)
       fs.mkdirSync(dir,{recursive:true});
-    } 
+    }
     try {
       fs.writeFileSync(path.join(dir, "/program.cpp"), code);
       fs.writeFileSync(path.join(dir, "/input.txt"), input);
