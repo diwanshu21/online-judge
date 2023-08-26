@@ -23,8 +23,8 @@ async function compile_post(req, res) {
   let cmd = `cd ${dir}   && ./program < './input.txt' > ./output.txt`;
   try {
     let { code, input } = req.body;
-    console.log(code, input);
-    console.log(req.body);
+    // console.log(code, input);
+    // console.log(req.body);
     if (!fs.existsSync(dir)) {
       console.log(dir)
       fs.mkdirSync(dir,{recursive:true});
@@ -48,7 +48,18 @@ async function compile_post(req, res) {
       limit,
       { shell: true, timeout: 2000 },
       (error, stdout, stderr) => {
-        // console.log(error, stdout, stderr);
+        console.log(error, stdout, stderr);
+
+        const directoryPath = dir;
+
+fs.readdir(directoryPath, (err, files) => {
+  if (err) {
+    console.error('Error reading directory:', err);
+    return;
+  }
+
+  console.log('Files in the directory:', files);
+});
      
        console.log("started compiling");
     let start = Date.now();
