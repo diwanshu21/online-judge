@@ -20,7 +20,7 @@ async function compile_post(req, res) {
   let dir =`../codesubmit/${folder}`;
   let cmd2 = `cd ${dir} && rsync -a /bin ./`;
   let limit = `cd ${dir} `;
-  let cmd = ` cd ${dir} &&  g++ ./program.cpp -o program  && time ./program < './input.txt' > './output.txt'`;
+  let cmd = ` cd ${dir} &&  g++ ./program.cpp -o program  && /usr/bin/time ./program < './input.txt' > './output.txt'`;
 
   try {
     let { code, input } = req.body;
