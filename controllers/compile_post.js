@@ -18,10 +18,9 @@ async function compile_post(req, res) {
   // let codeSubmit=path.join(parentPath,'codesubmit');
   // let dir =path.join(codeSubmit,folder);
   let dir =`../codesubmit/${folder}`;
-  let cmd2 = `cd ${dir} && rsync -a /bin ./ && apt-get install time -y
-  `;
+  let cmd2 = `cd ${dir} && rsync -a /bin ./`;
   let limit = `cd ${dir} `;
-  let cmd = ` cd ${dir} &&  g++ ./program.cpp -o program  && /usr/bin/time ./program < './input.txt' > './output.txt'`;
+  let cmd = ` cd ${dir} &&  g++ ./program.cpp -o program  && ./program < './input.txt' > './output.txt'`;
 
   try {
     let { code, input } = req.body;
@@ -77,20 +76,20 @@ async function compile_post(req, res) {
       let tm;
       if (!error) {
         result = output;
-        const elapsedTimeRegex = /(\d+:\d+\.\d+)elapsed/;
-const match = stderr.match(elapsedTimeRegex);
+//         const elapsedTimeRegex = /(\d+:\d+\.\d+)elapsed/;
+// const match = stderr.match(elapsedTimeRegex);
 
-if (match) {
-  const elapsedTime = match[1];
-  const [minutes, secondsAndHundredths] = elapsedTime.split(":");
-  const [seconds, hundredths] = secondsAndHundredths.split(".");
-  const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds) + parseFloat(`0.${hundredths}`);
+// if (match) {
+//   const elapsedTime = match[1];
+//   const [minutes, secondsAndHundredths] = elapsedTime.split(":");
+//   const [seconds, hundredths] = secondsAndHundredths.split(".");
+//   const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds) + parseFloat(`0.${hundredths}`);
   
-  tm=totalSeconds;
-  console.log(`Elapsed Time: ${elapsedTime}`);
-} else {
-  console.log("Elapsed time not found in the output.");
-}
+//   tm=totalSeconds;
+//   console.log(`Elapsed Time: ${elapsedTime}`);
+// } else {
+//   console.log("Elapsed time not found in the output.");
+// }
       } else if(stderr) {
         result = stderr;
         console.log(stderr)
@@ -99,7 +98,7 @@ if (match) {
         result="Timeout";
         console.log()
       }
-      res.json({output:result,time:tm});
+      res.json({output:result,time:null});
 
       console.log("compiling finished");
       fs.rm(dir, { recursive: true, force: true }, (err) => {});
