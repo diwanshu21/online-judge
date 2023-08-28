@@ -18,8 +18,6 @@ async function compile_post(req, res) {
   // let codeSubmit=path.join(parentPath,'codesubmit');
   // let dir =path.join(codeSubmit,folder);
   let dir =`../codesubmit/${folder}`;
-  let cmd2 = `cd ${dir} && rsync -a /bin ./`;
-  let limit = `cd ${dir} `;
   let cmd = ` cd ${dir} &&  g++ ./program.cpp -o program  && ./program < './input.txt' > './output.txt'`;
 
   try {
@@ -38,20 +36,8 @@ async function compile_post(req, res) {
     } catch (err) {
       console.log(err);
     }
-    cp.execSync(
-      cmd2,
-      { shell: true, timeout: 10000 },
-      (error, stdout, stderr) => {
-        // console.log(error, stdout, stderr);
-      }
-    );
-    cp.exec(
-      limit,
-      { shell: true, timeout: 2000 },
-      (error, stdout, stderr) => {
-        console.log(error, stdout, stderr);
-     
-       console.log("started compiling");
+
+    console.log("started compiling");
     let start = Date.now();
 
     cp.exec(cmd, { shell: true, timeout: 10000 }, (error, stdout, stderr) => {
@@ -103,11 +89,6 @@ async function compile_post(req, res) {
       console.log("compiling finished");
       fs.rm(dir, { recursive: true, force: true }, (err) => {});
     });
-      }
-    );
-  
-
-
     
   } catch (error) {
     console.log("error in compiling");
